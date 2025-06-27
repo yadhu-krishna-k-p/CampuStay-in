@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Stay - Find Your Perfect PG Near Your College</title>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 80px 0;
+        }
+
+        .property-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .property-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .price-tag {
+            background: var(--accent-color);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+        }
+
+        .feature-icon {
+            color: var(--secondary-color);
+            font-size: 1.2rem;
+        }
+
+        .distance-badge {
+            background: rgba(52, 152, 219, 0.1);
+            color: var(--secondary-color);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .college-card {
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .college-card:hover {
+            border-color: var(--secondary-color);
+            background-color: #f8f9fa;
+        }
+
+        .college-card.selected {
+            border-color: var(--secondary-color);
+            background-color: #e9ecef;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        /* Styling for modal map embed */
+        .modal-map-embed {
+            width: 100%;
+            height: 300px; /* Larger height for map in modal */
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        footer {
+            background-color: var(--primary-color);
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#home">
+                <i class="bi bi-house-door-fill"></i> Campus Stay
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#search">Search</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">Contact</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-outline-light ms-2 px-3" href="#login">Login</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <section id="home" class="hero-section text-center">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <h1 class="display-4 fw-bold mb-4">Find Your Perfect PG Near Your College</h1>
+                    <p class="lead mb-5">Choose your college and discover the best PG accommodations within walking distance</p>
+                    
+                    <div class="card p-4 shadow-lg">
+                        <div class="mb-4">
+                            <h5 class="text-dark mb-3">Select Your College</h5>
+                            <div class="row g-3">
+                                <div class="col-md-3">
+                                    <div class="card college-card text-center p-3" data-college="engineering" onclick="selectCollege(this)">
+                                        <i class="bi bi-gear-fill fs-2 text-primary mb-2"></i>
+                                        <h6 class="mb-1">Engineering College</h6>
+                                        <small class="text-muted">200+ PGs nearby</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card college-card text-center p-3" data-college="medical" onclick="selectCollege(this)">
+                                        <i class="bi bi-heart-pulse-fill fs-2 text-danger mb-2"></i>
+                                        <h6 class="mb-1">Medical College</h6>
+                                        <small class="text-muted">150+ PGs nearby</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card college-card text-center p-3" data-college="business" onclick="selectCollege(this)">
+                                        <i class="bi bi-briefcase-fill fs-2 text-warning mb-2"></i>
+                                        <h6 class="mb-1">Business School</h6>
+                                        <small class="text-muted">120+ PGs nearby</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card college-card text-center p-3" data-college="arts" onclick="selectCollege(this)">
+                                        <i class="bi bi-palette-fill fs-2 text-success mb-2"></i>
+                                        <h6 class="mb-1">Arts College</h6>
+                                        <small class="text-muted">80+ PGs nearby</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="search" class="py-5">
+        <div class="container">
+            <div class="row mb-5">
+                <div class="col-lg-12 text-center">
+                    <h2 class="fw-bold mb-3">PG & Hostels Near Your College</h2>
+                    <p class="text-muted" id="collegeSelectedText">Select your college above to see nearby accommodations</p>
+                </div>
+            </div>
+            
+            <div class="row g-4" id="propertyContainer">
+                <div class="col-12 text-center" id="defaultMessage">
+                    <div class="card border-0 bg-light p-5">
+                        <i class="bi bi-arrow-up fs-1 text-muted mb-3"></i>
+                        <h5 class="text-muted">Choose your college above to see nearby PG options</h5>
+                        <p class="text-muted mb-0">We'll show you accommodations sorted by distance from your selected college</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-5">
+                <button class="btn btn-outline-primary btn-lg">Load More Properties</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="py-5 bg-light">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h2 class="fw-bold mb-4">Why Choose Campus Stay?</h2>
+                    <div class="row g-4">
+                        <div class="col-12">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0">
+                                    <i class="bi bi-geo-alt-fill text-primary fs-4"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h5>Hyperlocal Focus</h5>
+                                    <p class="text-muted">Specialized in your area with 4 colleges within 6km radius - we know every good PG around!</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0">
+                                    <i class="bi bi-rulers text-success fs-4"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h5>Distance-Based Sorting</h5>
+                                    <p class="text-muted">Find PGs sorted by exact walking distance from your college gate.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0">
+                                    <i class="bi bi-check-circle-fill text-warning fs-4"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h5>Locally Verified</h5>
+                                    <p class="text-muted">Every PG personally visited and verified by our local team.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <img src="https://via.placeholder.com/500x400/f8f9fa/6c757d?text=Happy+Students" class="img-fluid rounded shadow" alt="Happy Students">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto text-center">
+                    <h2 class="fw-bold mb-4">Get in Touch</h2>
+                    <p class="text-muted mb-5">Need help finding the perfect accommodation near your college? We know the area inside out!</p>
+                    
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                <i class="bi bi-envelope-fill text-primary fs-1 mb-3"></i>
+                                <h5>Email Us</h5>
+                                <p class="text-muted">support@campusstay.com</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                <i class="bi bi-telephone-fill text-primary fs-1 mb-3"></i>
+                                <h5>Call Us</h5>
+                                <p class="text-muted">+91 9876543210</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                <i class="bi bi-chat-dots-fill text-primary fs-1 mb-3"></i>
+                                <h5>Live Chat</h5>
+                                <p class="text-muted">Available 24/7</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-4">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <p class="mb-0">© 2024 Campus Stay. All rights reserved.</p>
+                </div>
+                <div class="col-lg-6 text-lg-end">
+                    <a href="#" class="text-white-50 me-3">Privacy Policy</a>
+                    <a href="#" class="text-white-50 me-3">Terms of Service</a>
+                    <a href="#" class="text-white-50">Support</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <div class="modal fade" id="pgDetailModal" tabindex="-1" aria-labelledby="pgDetailModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="pgDetailModalLabel">PG Name (Dynamic)</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <img id="modalPgImage" src="" class="img-fluid rounded mb-3" alt="PG Image">
+                    <h6>Description:</h6>
+                    <p id="modalPgFullDescription"></p>
+                    
+                    <h6>Amenities:</h6>
+                    <ul id="modalPgAmenities" class="list-unstyled row g-2">
+                        </ul>
+
+                    <h6>Location:</h6>
+                    <p id="modalPgDistance"></p>
+                    <div id="modalPgMapEmbed" class="modal-map-embed">
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    
+    <script>
+        // Updated Sample data with valid Google Maps embed URLs for random places in India.
+        // For a real application, replace 'q=' with precise addresses or lat/long.
+        const pgData = [
+            {
+                name: "Tech Hub PG",
+                distances: { engineering: "0.3 km", medical: "2.1 km", business: "1.5 km", arts: "2.5 km" },
+                price: "₹12,000",
+                description: "Modern PG with high-speed internet, perfect for focused students.",
+                fullDescription: "Tech Hub PG offers a vibrant and conducive environment for students, especially those pursuing demanding academic courses. We provide high-speed internet, ergonomic study desks, and quiet zones. All rooms are equipped with AC, and we have 24/7 power backup. Located just 0.3 km from Engineering College, it’s ideal for minimal commute. Weekly cleaning and maintenance services are included.",
+                amenities: ["WiFi", "Study Room", "Parking", "AC", "Laundry Services", "24/7 Security"],
+                image: "https://via.placeholder.com/400x250/3498db/ffffff?text=Tech+Hub+PG",
+                // Valid Google Maps embed URL using a place query
+                mapEmbedUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.0090875329185!2d77.5936838!3d12.9715987!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae16790a6e60b9%3A0x6b7b2b0c6d7a9b0!2sVidhana%20Soudha!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
+            },
+            {
+                name: "Engineers Paradise",
+                distances: { engineering: "0.7 km", medical: "1.8 km", business: "1.9 km", arts: "3.2 km" },
+                price: "₹10,500",
+                description: "Budget-friendly accommodation with all basic facilities.",
+                fullDescription: "Engineers Paradise provides affordable yet comfortable living. Our facilities include nutritious meals, regular laundry, and a common lounge for relaxation. We understand student needs and ensure a hassle-free stay. Perfect for those looking for value near campus.",
+                amenities: ["WiFi", "Meals", "Laundry", "Common Room", "Daily Cleaning"],
+                image: "https://via.placeholder.com/400x250/2c3e50/ffffff?text=Engineers+Paradise",
+                mapEmbedUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3502.502931126084!2d77.2289689!3d28.6141364!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390cfd3d0f0d14b1%3A0x444d34f0d7e5d8a!2sIndia%20Gate!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
+            },
+            {
+                name: "Green Valley Girls Hostel",
+                distances: { engineering: "1.2 km", medical: "0.4 km", business: "1.1 km", arts: "0.9 km" },
+                price: "₹8,500",
+                description: "Safe and secure hostel with 24/7 security, mess facility, and study rooms.",
+                fullDescription: "Green Valley is exclusively for girls, offering a very secure and nurturing environment. We have strict entry protocols, CCTV surveillance, and female wardens. The mess provides healthy, home-cooked style meals. Special attention is given to cleanliness and safety. Close to Medical and Arts Colleges.",
+                amenities: ["24/7 Security", "Study Room", "Girls Only", "Nutritious Meals", "Daily Cleaning", "First Aid"],
+                image: "https://via.placeholder.com/400x250/e74c3c/ffffff?text=Hostel+Image",
+                mapEmbedUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3782.909673324151!2d73.8184606!3d18.5376179!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc2bf3c2d43a6d7%3A0xc6c7b9a7c3e7f4d!2sShaniwar%20Wada!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
+            },
+            {
+                name: "Modern Living Co-ed PG",
+                distances: { engineering: "0.8 km", medical: "1.5 km", business: "0.5 km", arts: "1.3 km" },
+                price: "₹15,000",
+                description: "Premium accommodation with AC rooms, gym, and recreational facilities.",
+                fullDescription: "Experience premium living at Modern Living Co-ed PG. All rooms are air-conditioned and well-furnished. Our facilities include a fully-equipped gym, indoor games area, and a common TV lounge. We focus on providing a comfortable and social environment for students from all disciplines.",
+                amenities: ["AC Rooms", "Gym", "Parking", "Recreational Area", "High-speed WiFi", "Housekeeping"],
+                image: "https://via.placeholder.com/400x250/2c3e50/ffffff?text=Modern+PG",
+                mapEmbedUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3769.7214695079637!2d72.8252726!3d19.07609!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7c6306644edc1%3A0x5da4ed8f8d648301!2sGateway%20Of%20India!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
+            },
+            {
+                name: "Medic Haven",
+                distances: { engineering: "2.5 km", medical: "0.2 km", business: "2.9 km", arts: "1.5 km" },
+                price: "₹13,500",
+                description: "Quiet and peaceful environment, ideal for medical students.",
+                fullDescription: "Medic Haven is tailored for medical students requiring a calm and focused study atmosphere. Our rooms are soundproofed, and we have a dedicated quiet library for late-night studies. Healthy and hygienic food is provided, keeping in mind student wellness. We prioritize safety and a healthy living environment.",
+                amenities: ["Library", "24/7 Security", "Meals", "Quiet Zones", "First Aid Kit", "Emergency Contact"],
+                image: "https://via.placeholder.com/400x250/27ae60/ffffff?text=Medic+Haven",
+                mapEmbedUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3684.090600122971!2d88.3426189!3d22.5726461!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a02773c3830c0c1%3A0xce3d2894178a57a1!2sVictoria%20Memorial!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
+            },
+            {
+                name: "Creative Corner",
+                distances: { engineering: "3.1 km", medical: "1.2 km", business: "2.1 km", arts: "0.6 km" },
+                price: "₹9,500",
+                description: "Artistic and vibrant space for creative minds.",
+                fullDescription: "Creative Corner is designed to inspire! We offer a shared art studio space, a music room with soundproofing, and a beautiful garden for relaxation. It’s a co-living space where artists and creative students can collaborate and feel at home. Located conveniently close to Arts College.",
+                amenities: ["Art Studio", "WiFi", "Common Area", "Music Room", "Garden", "Creative Workshops"],
+                image: "https://via.placeholder.com/400x250/1abc9c/ffffff?text=Creative+Corner",
+                mapEmbedUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3501.996172605934!2d77.1030048!3d28.6141364!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390d1c7f991f2b6b%3A0x2f974e6f4a8e8f8!2sQutub%20Minar!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
+            },
+            {
+                name: "Downtown PG",
+                distances: { engineering: "1.5 km", medical: "1.0 km", business: "0.8 km", arts: "1.4 km" },
+                price: "₹11,000",
+                description: "Centrally located PG with easy access to public transport.",
+                fullDescription: "Downtown PG offers comfortable living in the heart of the city, ensuring easy access to all major colleges via public transport. Our amenities include high-speed WiFi, regular meals, and laundry services. It's a great option for students who value connectivity and a lively urban experience.",
+                amenities: ["WiFi", "Meals", "Laundry", "Near Public Transport", "24/7 Power Backup"],
+                image: "https://via.placeholder.com/400x250/f8f9fa/6c757d?text=Downtown+PG",
+                mapEmbedUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3502.502931126084!2d77.2289689!3d28.6141364!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390cfd3d0f0d14b1%3A0x444d34f0d7e5d8a!2sIndia%20Gate!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
+            }
+        ];
+
+        let selectedCollege = '';
+
+        // Get the modal element once on page load
+        const pgDetailModalElement = document.getElementById('pgDetailModal');
+
+        /**
+         * Attaches event listeners for "Save" buttons.
+         */
+        function initializeCardInteractions() {
+            document.querySelectorAll('.save-btn').forEach(button => {
+                button.removeEventListener('click', handleSaveButtonClick); // Prevent duplicate listeners
+                button.addEventListener('click', handleSaveButtonClick);
+            });
+        }
+
+        /**
+         * Handler for "Save" button clicks.
+         * @param {Event} e - The click event object.
+         */
+        function handleSaveButtonClick(e) {
+            const button = e.currentTarget;
+            const icon = button.querySelector('i');
+            if (icon && icon.classList.contains('bi-heart')) {
+                icon.classList.remove('bi-heart');
+                icon.classList.add('bi-heart-fill');
+                button.classList.remove('btn-outline-primary');
+                button.classList.add('btn-danger');
+            } else if (icon && icon.classList.contains('bi-heart-fill')) {
+                icon.classList.remove('bi-heart-fill');
+                icon.classList.add('bi-heart');
+                button.classList.remove('btn-danger');
+                button.classList.add('btn-outline-primary');
+            }
+        }
+
+        /**
+         * Loads and sorts all PG properties based on their distance from the selected college.
+         * @param {string} collegeSlug - The slug of the selected college (e.g., 'engineering').
+         */
+        function loadPGsForCollege(collegeSlug) {
+            const container = document.getElementById('propertyContainer');
+            const defaultMessage = document.getElementById('defaultMessage');
+            
+            if (defaultMessage) {
+                defaultMessage.style.display = 'none';
+            }
+            
+            let pgsToShow = pgData.filter(pg => pg.distances[collegeSlug]);
+
+            pgsToShow.sort((a, b) => {
+                const distanceA = parseFloat(a.distances[collegeSlug]);
+                const distanceB = parseFloat(b.distances[collegeSlug]);
+                return distanceA - distanceB;
+            });
+            
+            if (pgsToShow.length === 0) {
+                container.innerHTML = `
+                    <div class="col-12 text-center">
+                        <div class="card border-0 bg-light p-5">
+                            <i class="bi bi-info-circle fs-1 text-muted mb-3"></i>
+                            <h5 class="text-muted">No PGs found for this college.</h5>
+                            <p class="text-muted mb-0">Please check back later for more listings.</p>
+                        </div>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = pgsToShow.map(pg => `
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card property-card h-100">
+                            <div class="position-relative">
+                                <img src="${pg.image}" class="card-img-top" alt="${pg.name}">
+                                <span class="position-absolute top-0 end-0 m-2 price-tag">${pg.price}/month</span>
+                                <span class="position-absolute top-0 start-0 m-2 distance-badge">${pg.distances[collegeSlug]} away</span>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">${pg.name}</h5>
+                                <p class="text-muted mb-2">
+                                    <i class="bi bi-geo-alt feature-icon"></i> ${pg.distances[collegeSlug]} from ${collegeSlug.charAt(0).toUpperCase() + collegeSlug.slice(1)} College
+                                </p>
+                                <p class="card-text">${pg.description}</p>
+                                
+                                <div class="row text-center border-top pt-3">
+                                    ${pg.amenities.slice(0,3).map(amenity => `
+                                        <div class="col-4">
+                                            <i class="bi bi-check-circle feature-icon"></i>
+                                            <small class="d-block">${amenity}</small>
+                                        </div>
+                                    `).join('')}
+                                    ${pg.amenities.length > 3 ? `<div class="col-12 mt-2"><small class="text-muted">and more...</small></div>` : ''}
+                                </div>
+                            </div>
+                            <div class="card-footer bg-transparent">
+                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                    <button class="btn btn-outline-primary btn-sm me-md-2 save-btn">
+                                        <i class="bi bi-heart"></i> Save
+                                    </button>
+                                    <button class="btn btn-primary btn-sm view-details-btn" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#pgDetailModal"
+                                            data-pg-name="${pg.name}">View Details</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+                initializeCardInteractions();
+            }
+        }
+
+        // College selection functionality
+        function selectCollege(element) {
+            document.querySelectorAll('.college-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            element.classList.add('selected');
+            
+            selectedCollege = element.dataset.college;
+            
+            const collegeNames = {
+                engineering: 'Engineering College',
+                medical: 'Medical College',
+                business: 'Business School',
+                arts: 'Arts College'
+            };
+            document.getElementById('collegeSelectedText').textContent =
+                `Showing accommodations near ${collegeNames[selectedCollege]}`;
+            
+            loadPGsForCollege(selectedCollege);
+        }
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Initial load: This function runs once the page is fully loaded.
+        window.addEventListener('DOMContentLoaded', (event) => {
+            const defaultCollegeSlug = 'engineering';
+            const defaultCollegeCard = document.querySelector(`.college-card[data-college="${defaultCollegeSlug}"]`);
+            
+            if (defaultCollegeCard) {
+                defaultCollegeCard.classList.add('selected');
+                selectedCollege = defaultCollegeSlug;
+                
+                const collegeNames = {
+                    engineering: 'Engineering College',
+                    medical: 'Medical College',
+                    business: 'Business School',
+                    arts: 'Arts College'
+                };
+                document.getElementById('collegeSelectedText').textContent =
+                    `Showing accommodations near ${collegeNames[selectedCollege]}`;
+
+                loadPGsForCollege(selectedCollege);
+            }
+
+            // IMPORTANT: Add listener to the MODAL ITSELF to populate content before it shows
+            pgDetailModalElement.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget; 
+                const pgName = button.getAttribute('data-pg-name');
+                
+                const selectedPg = pgData.find(pg => pg.name === pgName);
+
+                if (selectedPg) {
+                    const modalTitle = pgDetailModalElement.querySelector('#pgDetailModalLabel');
+                    const modalImage = pgDetailModalElement.querySelector('#modalPgImage');
+                    const modalFullDescription = pgDetailModalElement.querySelector('#modalPgFullDescription');
+                    const modalAmenitiesList = pgDetailModalElement.querySelector('#modalPgAmenities');
+                    const modalDistance = pgDetailModalElement.querySelector('#modalPgDistance');
+                    const modalMapEmbedContainer = pgDetailModalElement.querySelector('#modalPgMapEmbed');
+
+                    modalTitle.textContent = selectedPg.name;
+                    modalImage.src = selectedPg.image;
+                    modalImage.alt = selectedPg.name;
+                    modalFullDescription.textContent = selectedPg.fullDescription || 'No detailed description available.';
+                    
+                    modalAmenitiesList.innerHTML = '';
+                    if (selectedPg.amenities && selectedPg.amenities.length > 0) {
+                        selectedPg.amenities.forEach(amenity => {
+                            const li = document.createElement('li');
+                            li.className = 'col-md-6';
+                            li.innerHTML = `<i class="bi bi-check-circle feature-icon me-2"></i>${amenity}`;
+                            modalAmenitiesList.appendChild(li);
+                        });
+                    } else {
+                        modalAmenitiesList.innerHTML = '<li class="col-12 text-muted">No specific amenities listed.</li>';
+                    }
+
+                    if (selectedCollege && selectedPg.distances[selectedCollege]) {
+                        const collegeNames = {
+                            engineering: 'Engineering College', medical: 'Medical College',
+                            business: 'Business School', arts: 'Arts College'
+                        };
+                        modalDistance.textContent = `${selectedPg.distances[selectedCollege]} from ${collegeNames[selectedCollege]}`;
+                    } else {
+                        modalDistance.textContent = 'Distance not available for selected college.';
+                    }
+
+                    // Dynamically generate the map embed URL using the PG name for search
+                    // This is a common pattern when you don't have precise lat/long
+                    // For better accuracy, use specific lat/long if available in your data.
+                    if (selectedPg.mapEmbedUrl) {
+                         modalMapEmbedContainer.innerHTML = `
+                            <iframe
+                                src="${selectedPg.mapEmbedUrl}"
+                                width="100%"
+                                height="100%"
+                                style="border:0;"
+                                allowfullscreen=""
+                                loading="lazy"
+                                referrerpolicy="no-referrer-when-downgrade">
+                            </iframe>
+                        `;
+                    } else {
+                        modalMapEmbedContainer.innerHTML = '<p class="text-muted text-center mt-3">Map location not available.</p>';
+                    }
+                } else {
+                    console.error('PG data not found for:', pgName);
+                    modalTitle.textContent = 'Error';
+                    modalFullDescription.textContent = 'Could not load details.';
+                    modalAmenitiesList.innerHTML = '';
+                    modalDistance.textContent = '';
+                    modalMapEmbedContainer.innerHTML = '';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
